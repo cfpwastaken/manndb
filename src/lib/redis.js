@@ -1,9 +1,13 @@
+import { building } from "$app/environment";
+import { env } from "$env/dynamic/private";
 import { SchemaFieldTypes, createClient } from "redis";
 
-export const redis = createClient();
+export const redis = createClient({
+	url: env.REDIS_URL
+});
 // @ts-ignore
 redis.on("error", (err) => console.log);
-redis.connect();
+if(!building) redis.connect();
 
 /**
  * @param {string} slug
@@ -60,4 +64,4 @@ export async function searchIndex(index, query) {
 	return results;
 }
 
-await createIndex();
+if(!building) await createIndex();
