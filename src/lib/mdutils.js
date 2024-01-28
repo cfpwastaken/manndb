@@ -1,3 +1,5 @@
+import tags from "./tags";
+
 /**
  * @param {string} text
  */
@@ -36,4 +38,31 @@ export function getFrontmatterAsJSONObject(text) {
 		json[key] = value;
 	}
 	return json;
+}
+
+/**
+ * @param {string} title 
+ * @returns Array of tags
+ */
+export function autoTags(title) {
+	// Loop through all tags and look if one of the keywords is in the title, add them to the tags array
+	const autoTags = [];
+	for(const tag of tags) {
+		for(const keyword of tag.keywords) {
+			if(title.toLowerCase().includes(keyword)) {
+				autoTags.push(tag.slug);
+			}
+		}
+	}
+	return autoTags;
+}
+
+/**
+ * @param {string} title 
+ * @returns A slug
+ */
+export function titleToSlug(title) {
+	// OpenWRT Bridge ohne RelayD mit WDS
+	// => openwrt-bridge-ohne-relayd-mit-wds
+	return title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 }

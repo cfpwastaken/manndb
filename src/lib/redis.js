@@ -20,6 +20,13 @@ export async function addMan(slug, content) {
 	});
 }
 
+/**
+ * @param {any} slug
+ */
+export async function deleteMan(slug) {
+	await redis.del(`man:${slug}`);
+}
+
 async function createIndex() {
 	try {
 		console.log(await redis.ft.create("idx:mans", {
@@ -36,9 +43,11 @@ async function createIndex() {
 			},
 			"$.author": {
 				type: SchemaFieldTypes.TAG
-			}
-
-			// AI: the difference between TAG and TEXT is that TAG is case-sensitive
+			},
+			// "$.tags": {
+			// 	type: SchemaFieldTypes.TAG,
+			// 	seperator: ","
+			// }
 		}, {
 			ON: "JSON",
 			PREFIX: "man:"

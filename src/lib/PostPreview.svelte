@@ -16,13 +16,15 @@
 	}}>
 		<h2>{post.title}</h2>
 	</a>
-	<!-- <div class="categories">
-		{#each post.categories as cat}
-			<Chip>
-				<a href="/category/{cat}">{cat}</a>
-			</Chip>
-		{/each}
-	</div> -->
+	<div class="categories">
+		{#if post.tags}
+			{#each post.tags as cat}
+				<Chip>
+					<a href="/tag/{cat}">{cat}</a>
+				</Chip>
+			{/each}
+		{/if}
+	</div>
 	<span class="info">
 		{post.date}
 		<!-- todo reading time -->

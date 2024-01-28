@@ -1,4 +1,6 @@
 <script>
+    import Chip from "$lib/Chip.svelte";
+
 	/**
 	 * @type {FileList}
 	 */
@@ -16,6 +18,19 @@
 	async function compileFile(file) {
 		const text = await file.text();
 		return await fetch("/api/render", {
+			method: "POST",
+			body: JSON.stringify({
+				md: text
+			})
+		}).then(res => res.json());
+	}
+
+	/**
+	 * @param {File} file
+	 */
+	async function getPreviewData(file) {
+		const text = await file.text();
+		return await fetch("/api/preview", {
 			method: "POST",
 			body: JSON.stringify({
 				md: text
@@ -55,6 +70,22 @@
 		{#if files}
 			{#each files as file}
 				<div class="content">
+					{#await getPreviewData(file)}
+						<p>Previewing...</p>
+					{:then info}
+						<span>Slug: {info.slug}</span>
+						<div class="categories">
+							{#if info.tags}
+								{#each info.tags as cat}
+									<Chip>
+										<a href="/tag/{cat}">{cat}</a>
+									</Chip>
+								{/each}
+							{/if}
+						</div>
+					{:catch error}
+						<p>Failed to preview: {error.message}</p>
+					{/await}
 					{#await compileFile(file)}
 						<p>Compiling...</p>
 					{:then html}
@@ -85,5 +116,10 @@
 	.content {
 		/* margin: 15px; */
 		font-size: 1.4rem;
+	}
+
+	.categories {
+		display: flex;
+		gap: 5px;
 	}
 </style>

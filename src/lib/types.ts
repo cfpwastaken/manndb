@@ -4,7 +4,7 @@ export type Post = {
 	slug: string
 	description: string
 	date: string
-	categories: string[]
+	tags: string[]
 	published: boolean
 	author: string;
 }

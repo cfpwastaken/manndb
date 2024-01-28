@@ -11,7 +11,8 @@
 		author: "cfp",
 		content: `# Loading`,
 		html: `<h1>Loading...</h1>`,
-		slug: data.slug
+		slug: data.slug,
+		tags: []
 	};
 
 	onMount(async () => {
@@ -23,7 +24,8 @@
 				author: "MannDB",
 				content: ``,
 				html: `<h1>404</h1><span>Diesen Man gibt es nicht.</span>`,
-				slug: "404"
+				slug: "404",
+				tags: []
 			}
 			return;
 		}
@@ -59,13 +61,15 @@
 <article>
 	<div class="info">
 		<h1>{man.title}</h1>
-		<!-- <div class="categories">
-			{#each data.meta.categories as cat}
-				<Chip>
-					<a href="/category/{cat}">{cat}</a>
-				</Chip>
-			{/each}
-		</div> -->
+		<div class="categories">
+			{#if man.tags}
+				{#each man.tags as cat}
+					<Chip>
+						<a href="/tag/{cat}">{cat}</a>
+					</Chip>
+				{/each}
+			{/if}
+		</div>
 
 		<p>
 			{man.date}
@@ -100,6 +104,24 @@
 				}
 			}>
 				<svg width="40px" height="40px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5.25 20.5h13.498a.75.75 0 0 1 .101 1.493l-.101.007H5.25a.75.75 0 0 1-.102-1.494l.102-.006h13.498H5.25Zm6.633-18.498L12 1.995a1 1 0 0 1 .993.883l.007.117v12.59l3.294-3.293a1 1 0 0 1 1.32-.083l.094.084a1 1 0 0 1 .083 1.32l-.083.094-4.997 4.996a1 1 0 0 1-1.32.084l-.094-.083-5.004-4.997a1 1 0 0 1 1.32-1.498l.094.083L11 15.58V2.995a1 1 0 0 1 .883-.993L12 1.995l-.117.007Z" fill="#ffffff"/></svg>
+			</button>
+			<button on:click={
+				async () => {
+					// Confirm
+					if(!confirm("Dies wird den Man permanent und unwiderruflich löschen. Da es noch kein Accountsystem gibt, vertraue Ich dir, dass du der Manersteller bist. Bist du dir sicher?")) return;
+
+					await fetch("/api/delete", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({slug: man.slug})
+					});
+					alert("*poof*");
+					location.href = "/";
+				}
+			}>
+				<svg width="40px" height="40px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21.5 6a1 1 0 0 1-.883.993L20.5 7h-.845l-1.231 12.52A2.75 2.75 0 0 1 15.687 22H8.313a2.75 2.75 0 0 1-2.737-2.48L4.345 7H3.5a1 1 0 0 1 0-2h5a3.5 3.5 0 1 1 7 0h5a1 1 0 0 1 1 1Zm-7.25 3.25a.75.75 0 0 0-.743.648L13.5 10v7l.007.102a.75.75 0 0 0 1.486 0L15 17v-7l-.007-.102a.75.75 0 0 0-.743-.648Zm-4.5 0a.75.75 0 0 0-.743.648L9 10v7l.007.102a.75.75 0 0 0 1.486 0L10.5 17v-7l-.007-.102a.75.75 0 0 0-.743-.648ZM12 3.5A1.5 1.5 0 0 0 10.5 5h3A1.5 1.5 0 0 0 12 3.5Z" fill="#ffffff"/></svg>
 			</button>
 		</div>
 	</div>

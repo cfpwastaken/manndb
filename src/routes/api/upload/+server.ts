@@ -1,12 +1,7 @@
-import { getTitle } from "$lib/mdutils";
+import { autoTags, getTitle, titleToSlug } from "$lib/mdutils";
 import { addMan } from "$lib/redis";
+import tags from "$lib/tags";
 import { json } from "@sveltejs/kit";
-
-function titleToSlug(title: string) {
-	// OpenWRT Bridge ohne RelayD mit WDS
-	// => openwrt-bridge-ohne-relayd-mit-wds
-	return title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-}
 
 export async function POST({ request }: { request: Request }) {
 	let { text, author } = await request.json();
@@ -15,10 +10,13 @@ export async function POST({ request }: { request: Request }) {
 	// Add new frontmatter
 	const title = getTitle(text);
 	const date = new Date().toLocaleDateString("de-DE");
+	const tags = autoTags(title);
 	const frontmatter = `---
 title: ${title}
 date: ${date}
 author: ${author}
+tags:
+${tags.map(tag => `  - ${tag}`).join("\n")}
 ---
 
 `;
@@ -28,7 +26,8 @@ author: ${author}
 		title,
 		date,
 		author,
-		content: text
+		content: text,
+		tags
 	})
 
 	return json({ slug });
