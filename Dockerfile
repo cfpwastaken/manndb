@@ -1,14 +1,14 @@
-FROM node
+FROM oven/bun
 
 WORKDIR /app
 
 COPY package.json /app/package.json
 
-RUN npm install
+RUN bun install
 
 COPY . /app
 
-RUN npm run build
+RUN bun run build -d
 
 EXPOSE 3000
 
