@@ -19,8 +19,22 @@
 	/**
 	 * @param {File} file
 	 */
+	async function ensureMarkdown(file) {
+		let text = await file.text();
+		if(file.type == "text/markdown") return text;
+		// make sure the file starts with the file name
+		text = `# ${file.name.split(".")[0]}\n\n` + text;
+		// make sure line breaks are preserved, markdown doesnt line break if there is only one line break
+		text = text.replace(/\n/g, "\n\n");
+
+		return text;
+	}
+
+	/**
+	 * @param {File} file
+	 */
 	async function compileFile(file) {
-		const text = await file.text();
+		let text = await ensureMarkdown(file);
 		return await fetch("/api/render", {
 			method: "POST",
 			body: JSON.stringify({
@@ -33,7 +47,7 @@
 	 * @param {File} file
 	 */
 	async function getPreviewData(file) {
-		const text = await file.text();
+		const text = await ensureMarkdown(file);
 		const preview = await fetch("/api/preview", {
 			method: "POST",
 			body: JSON.stringify({
@@ -67,7 +81,7 @@
 				const result = await fetch("/api/upload", {
 					method: "POST",
 					body: JSON.stringify({
-						text: await files[0].text(),
+						text: await ensureMarkdown(files[0]),
 						author,
 						keyword,
 						tags
