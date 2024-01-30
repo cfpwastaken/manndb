@@ -5,6 +5,10 @@ export async function GET({ params }: { params: { query: string } }) {
 	if(!params.query) {
 		params.query = "*";
 	}
-	const results = await searchIndex(INDEXES.MANS, params.query);
-	return json(results);
+	try {
+		const results = await searchIndex(INDEXES.MANS, params.query);
+		return json(results);
+	} catch(e) {
+		return json({total: 0, documents: []})
+	}
 }

@@ -1,22 +1,29 @@
 import { autoTags, getTitle, titleToSlug } from "$lib/mdutils";
 import { addMan } from "$lib/redis";
-import tags from "$lib/tags";
 import { json } from "@sveltejs/kit";
 
 export async function POST({ request }: { request: Request }) {
-	let { text, author } = await request.json();
+	let { text, author, keyword, tags } = await request.json();
+	if(!author) {
+		return json({ error: "Bitte gib einen Author an!" });
+	} else if(!keyword) {
+		return json({ error: "Bitte gib ein Keyword an!" });
+	} else if(!tags || tags.length === 0) {
+		return json({ error: "Bitte gib mindestens einen Tag an!" });
+	}
 	// Remove any frontmatter, if present
 	text = text.replace(/---\n[\s\S]*?\n---\n\n/, "");
 	// Add new frontmatter
 	const title = getTitle(text);
 	const date = new Date().toLocaleDateString("de-DE");
-	const tags = autoTags(title);
+	// const tags = await autoTags(title);
 	const frontmatter = `---
 title: ${title}
 date: ${date}
 author: ${author}
 tags:
-${tags.map(tag => `  - ${tag}`).join("\n")}
+${tags.map((tag: string) => `  - ${tag}`).join("\n")}
+keyword: ${keyword}
 ---
 
 `;
@@ -27,7 +34,8 @@ ${tags.map(tag => `  - ${tag}`).join("\n")}
 		date,
 		author,
 		content: text,
-		tags
+		tags,
+		keyword
 	})
 
 	return json({ slug });

@@ -7,8 +7,12 @@ export type Post = {
 	tags: string[]
 	published: boolean
 	author: string;
+	keyword: string;
 }
 
 export type TagInfo = {
+	slug: string
+	name: string
+	keywords: string[]
 	description: string
 }

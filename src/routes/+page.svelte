@@ -18,6 +18,31 @@
 					<a href="/tag/{tag.slug}">{tag.slug}</a>
 				</Chip>
 			{/each}
+			<Chip>
+				<a href="#" on:click={async () => {
+					const slug = prompt("Slug");
+					const name = prompt("Name");
+					const description = prompt("Beschreibung");
+					const keywordsText = prompt("Keywords (durch Komma getrennt, ohne Leerzeichen)");
+					let keywords;
+					if(keywordsText) keywords = keywordsText.split(",");
+					if(!slug || !name || !description || !keywords) return alert("Bitte alle Felder ausfüllen");
+
+					await fetch("/api/tags/new", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({
+							slug,
+							name,
+							description,
+							keywords
+						})
+					}).then(res => res.json()).then(console.log);
+					location.reload();
+				}}>Neuer Tag</a>
+			</Chip>
 		</div>
 	{:catch error}
 		<span>{error.message}</span>
@@ -41,7 +66,7 @@
 		<span>{error.message}</span>
 	{/await}
 {:else}
-	<span>Loading...</span>
+	<span>Loading....</span>
 {/if}
 
 <style>

@@ -1,10 +1,11 @@
 <script>
     import { browser } from '$app/environment';
+    import { page } from '$app/stores';
 	import PostPreview from '$lib//PostPreview.svelte';
 	import { onMount } from 'svelte';
 	import { scale } from 'svelte/transition';
 
-	let searchQuery = "";
+	let searchQuery = $page.url.searchParams.get("query") || "";
 	/**
 	 * @type {any}
 	 */
@@ -31,6 +32,7 @@
 <article>
 	<div class="info">
 		<h1>Search</h1>
+		<pre>Suchfilter: Tags: @tags:&lbrace;openwrt&rbrace; | Schlagwörter: @keyword:&lbrace;bridge&rbrace; | In -PGP endend: *PGP</pre>
 		<input type="text" placeholder="Type something..." bind:value={searchQuery} style="width: 30%;">
 	</div>
 

@@ -1,4 +1,4 @@
-import tags from "./tags";
+import { getTags } from "./redis";
 
 /**
  * @param {string} text
@@ -44,12 +44,15 @@ export function getFrontmatterAsJSONObject(text) {
  * @param {string} title 
  * @returns Array of tags
  */
-export function autoTags(title) {
+export async function autoTags(title) {
 	// Loop through all tags and look if one of the keywords is in the title, add them to the tags array
 	const autoTags = [];
+	const tags = await getTags();
 	for(const tag of tags) {
+		// @ts-ignore
 		for(const keyword of tag.keywords) {
 			if(title.toLowerCase().includes(keyword)) {
+				// @ts-ignore
 				autoTags.push(tag.slug);
 			}
 		}

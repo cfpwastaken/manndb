@@ -30,6 +30,8 @@
 		<!-- todo reading time -->
 		&middot;
 		{post.author}
+		&middot;
+		{post.keyword}
 	</span>
 </div>
 

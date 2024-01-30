@@ -16,7 +16,7 @@ if(!building) redis.connect();
 export async function addMan(slug, content) {
 	await redis.json.set(`man:${slug}`, "$", {
 		slug,
-		...content
+		...content,
 	});
 }
 
@@ -25,6 +25,37 @@ export async function addMan(slug, content) {
  */
 export async function deleteMan(slug) {
 	await redis.del(`man:${slug}`);
+}
+
+/**
+ * @param {string} slug
+ * @param {import("./types").TagInfo} tag
+ */
+export async function addTag(slug, tag) {
+	await redis.json.set(`tags:${slug}`, "$", tag);
+}
+
+/**
+ * @param {string} slug 
+ */
+export async function deleteTag(slug) {
+	await redis.del(`tags:${slug}`);
+}
+
+export async function getTags() {
+	const tags = await redis.keys("tags:*");
+	const tagObjects = [];
+	for(const tag of tags) {
+		tagObjects.push(await redis.json.get(tag));
+	}
+	return tagObjects;
+}
+
+/**
+ * @param {string} slug
+ */
+export async function getTag(slug) {
+	return await redis.json.get(`tags:${slug}`);
 }
 
 async function createIndex() {
@@ -44,10 +75,14 @@ async function createIndex() {
 			"$.author": {
 				type: SchemaFieldTypes.TAG
 			},
-			// "$.tags": {
-			// 	type: SchemaFieldTypes.TAG,
-			// 	seperator: ","
-			// }
+			"$.tags.*": {
+				type: SchemaFieldTypes.TAG,
+				AS: "tags"
+			},
+			"$.keyword": {
+				type: SchemaFieldTypes.TAG,
+				AS: "keyword"
+			}
 		}, {
 			ON: "JSON",
 			PREFIX: "man:"
@@ -68,7 +103,7 @@ export const INDEXES = {
  * @param {string} query
  */
 export async function searchIndex(index, query) {
-	console.log(index, query);
+	// console.log(index, query);
 	const results = await redis.ft.search(index, query)
 	return results;
 }
