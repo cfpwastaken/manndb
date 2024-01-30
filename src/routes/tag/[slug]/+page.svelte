@@ -7,10 +7,14 @@
 	/** @type {import('./$types').PageData} */
 	export let data;
 
+	/**
+	 * @type {import('$lib/types').TagInfo}
+	 */
 	let tag = {
 		name: data.slug,
 		slug: data.slug,
-		description: "Loading..."
+		description: "Loading...",
+		keywords: []
 	};
 
 	onMount(async () => {
@@ -19,7 +23,8 @@
 			tag = {
 				name: "404",
 				slug: "404",
-				description: "Diesen Tag gibt es nicht."
+				description: "Diesen Tag gibt es nicht.",
+				keywords: ["404"]
 			}
 			return;
 		}
@@ -67,6 +72,8 @@
 		<h1>{tag.name}</h1>
 
 		<span>{tag.description}</span>
+
+		<span>Schlagwörter: {tag.keywords.join(", ")}</span>
 	</div>
 
 	<div class="content container">
