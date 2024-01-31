@@ -1,5 +1,7 @@
 <script>
+    import { browser } from "$app/environment";
     import Chip from "$lib/Chip.svelte";
+    import Dialog from "$lib/Dialog.svelte";
 
 	/**
 	 * @type {FileList}
@@ -60,12 +62,44 @@
 
 	let author = "";
 	let keyword = "";
+	let showTagDialog = false;
 </script>
 
 <!-- SEO -->
 <svelte:head>
 	<title>MannDB</title>
 </svelte:head>
+
+<Dialog bind:showDialog={showTagDialog}>
+	<h1 style="margin: 0; text-align: center;">Tag hinzufügen</h1>
+	{#if browser}
+		{#await fetch("/api/tags").then(res => res.json())}
+			<span>Loading...</span>
+		{:then results}
+			<p style="text-align: center;">{results.length} Ergebnisse werden angezeigt</p>
+			<div class="tags">
+				{#each results as tag}
+					<Chip>
+						<a href="#" on:click={() => {
+							tags.push(tag.slug);
+							tags = tags;
+							showTagDialog = false;
+						}}>{tag.slug}</a>
+					</Chip>
+				{/each}
+			</div>
+		{:catch error}
+			<span>{error.message}</span>
+		{/await}
+	{:else}
+		<span>Loading...</span>
+	{/if}
+	<div class="buttons">
+		<button on:click={() => {
+			showTagDialog = false;
+		}}>Abbrechen</button>
+	</div>
+</Dialog>
 
 <article>
 	<div class="info">
@@ -114,11 +148,7 @@
 								{/each}
 								<Chip>
 									<a href="#" on:click={() => {
-										const tag = prompt("Slug eines Tags eingeben:");
-										if(tag) {
-											tags.push(tag);
-											tags = tags;
-										}
+										showTagDialog = true;
 									}}>
 										Tag hinzufügen
 									</a>
@@ -163,5 +193,19 @@
 	.categories {
 		display: flex;
 		gap: 5px;
+	}
+
+	.tags {
+		display: flex;
+		gap: 5px;
+		view-transition-name: categories;
+		margin: 15px;
+		flex-wrap: wrap;
+	}
+
+	.buttons {
+		display: flex;
+		gap: 5px;
+		justify-content: center;
 	}
 </style>
