@@ -104,9 +104,7 @@
 <article>
 	<div class="info">
 		<h1>Hochladen</h1>
-		<!-- <span>!! ACHTUNG !! Bereits existierende slugs werden überschrieben (geupdated), die alte Version wird dabei gelöscht!!</span>
-		<span>!! ACHTUNG !! Das Feld "Author" muss immer mit dem gleichen Namen bestückt werden, e.g. dann nur "Jannik", und die auf "Jannik Eckhardt". Wenn es überhaupt nicht ausgefüllt ist gibts es eine Fehlermeldung!!</span>
-		<span>!! ACHTUNG !! Wenn das Schlagwort Feld nicht ausgefüllt ist, schneidet dir der Server deine Eier ab!</span> -->
+		<span>Bitte immer den gleichen Author angeben!</span>
 		<input type="text" placeholder="Author" bind:value={author}>
 		<input type="text" placeholder="Schlagwort" bind:value={keyword}>
 		<input type="file" bind:files>
