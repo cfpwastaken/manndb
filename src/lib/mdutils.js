@@ -57,7 +57,7 @@ export async function autoTags(title) {
 			}
 		}
 	}
-	return [...new Map(autoTags)]; // Remove duplicates
+	return [...new Set(autoTags)]; // Remove duplicates
 }
 
 /**
