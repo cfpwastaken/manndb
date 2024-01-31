@@ -28,13 +28,12 @@
 					if(keywordsText) keywords = keywordsText.split(",");
 					if(!slug || !name || !description || !keywords) return alert("Bitte alle Felder ausfüllen");
 
-					await fetch("/api/tags/new", {
-						method: "POST",
+					await fetch("/api/tags/" + slug, {
+						method: "PUT",
 						headers: {
 							"Content-Type": "application/json"
 						},
 						body: JSON.stringify({
-							slug,
 							name,
 							description,
 							keywords
