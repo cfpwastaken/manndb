@@ -1,5 +1,5 @@
 import { autoTags, getTitle, titleToSlug } from "$lib/mdutils";
-import { addMan } from "$lib/redis";
+import { addMan, redis } from "$lib/redis";
 import { json } from "@sveltejs/kit";
 
 export async function POST({ request }: { request: Request }) {
@@ -29,6 +29,9 @@ keyword: ${keyword}
 `;
 	text = frontmatter + text;
 	const slug = titleToSlug(title);
+	if(await redis.exists("man:" + slug)) {
+		return json({ error: "Slug ist bereits vergeben!" });
+	}
 	await addMan(slug, {
 		title,
 		date,
