@@ -82,5 +82,6 @@
 		gap: 5px;
 		view-transition-name: categories;
 		margin: 15px;
+		flex-wrap: wrap;
 	}
 </style>
