@@ -1,38 +1,41 @@
-# create-svelte
+# MannDB
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+MannDB is a svelte-based web-app and backend for managing a redis database of manuals.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Redis database
+- Svelte(Kit) frontend
+- Markdown support
+- Search with RediSearch
+- Upload UI
+- API
+- Dark design
+- \[SOON\] User accounts
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Why the name?
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+In Linux, the mandb package is used to show manual pages for commands.
+This project is also a database of manuals, but for other tech-related things (ex. how to create a wifi bridge with openwrt).
+Since the project is German, the name is a play on words with the German word for man (Mann) and the mandb package, creating MannDB.
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've cloned the project and installed dependencies with `npm install` (or `pnpm install` or `bun install`), start a development server:
 
 ```bash
-npm run dev
+bun run dev
 
 # or start the server and open the app in a new browser tab
-npm run dev -- --open
+bun run dev -- --open
 ```
 
 ## Building
 
-To create a production version of your app:
+To create a production version of the app:
 
 ```bash
-npm run build
+bun run build
 ```
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+You can preview the production build with `bun run preview`.
