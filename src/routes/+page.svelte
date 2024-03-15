@@ -4,6 +4,11 @@
     import PostPreview from "$lib/PostPreview.svelte";
 
 </script>
+
+<svelte:head>
+	<title>MannDB</title>
+</svelte:head>
+
 <h1 style="text-align: center;">MannDB</h1>
 
 <h2 style="text-align: center;">Alle Tags</h2>
