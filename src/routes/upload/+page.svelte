@@ -2,6 +2,7 @@
     import { browser } from "$app/environment";
     import Chip from "$lib/Chip.svelte";
     import Dialog from "$lib/Dialog.svelte";
+    import { onMount } from "svelte";
 
 	/**
 	 * @type {FileList}
@@ -60,9 +61,15 @@
 		return preview;
 	}
 
-	let author = "";
 	let keyword = "";
 	let showTagDialog = false;
+	let privatePost = false;
+
+	onMount(() => {
+		if(!localStorage.getItem("mdbsession")) {
+			location.href = "/login?then=/upload&showThen=Upload";
+		}
+	})
 </script>
 
 <!-- SEO -->
@@ -104,9 +111,13 @@
 <article>
 	<div class="info">
 		<h1>Hochladen</h1>
-		<span>Bitte immer den gleichen Author angeben!</span>
-		<input type="text" placeholder="Author" bind:value={author}>
+		<!-- <span>Bitte immer den gleichen Author angeben!</span> -->
+		<!-- <input type="text" placeholder="Author" bind:value={author}> -->
 		<input type="text" placeholder="Schlagwort" bind:value={keyword}>
+		<div>
+			<input type="checkbox" bind:checked={privatePost}>
+			<span>Privater Post</span>
+		</div>
 		<input type="file" bind:files>
 		{#if files && files.length > 0}
 			<button on:click={async () => {
@@ -114,13 +125,19 @@
 					method: "POST",
 					body: JSON.stringify({
 						text: await ensureMarkdown(files[0]),
-						author,
+						session: localStorage.getItem("mdbsession"),
 						keyword,
-						tags
+						tags,
+						private: privatePost
 					})
 				}).then(res => res.json());
-				if(result.error) alert(result.error);
-				else location.href = "/" + result.slug;
+				if(result.error) {
+					alert(result.error);
+					if(result.action && result.action == "logout") {
+						localStorage.removeItem("mdbsession");
+						location.href = "/login";
+					}
+				} else location.href = "/" + result.slug;
 			}}>Hochladen</button>
 		{/if}
 	</div>

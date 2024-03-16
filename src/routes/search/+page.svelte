@@ -15,10 +15,16 @@
 		document.querySelector("input")?.focus();
 	});
 
+	function authorize() {
+		const session = localStorage.getItem("mdbsession");
+		if(!session) return "";
+		return session;
+	}
+
 	$: {
 		if(browser) {
 			(async () => {
-				searchResults = await fetch(`/api/search/${searchQuery}`).then(res => res.json());
+				searchResults = await fetch(`/api/search/${searchQuery}`, { headers: { "Authorization": authorize() } }).then(res => res.json());
 			})();
 		}
 	}

@@ -57,6 +57,12 @@
 		}
 		return letters.sort();
 	}
+
+	function authorize() {
+		const session = localStorage.getItem("mdbsession");
+		if(!session) return "";
+		return session;
+	}
 </script>
 
 <!-- SEO -->
@@ -84,7 +90,7 @@
 
 	<div class="content container">
 		{#if browser}
-			{#await fetch(`/api/search/@tags:{${tag.slug}}`).then(res => res.json())}
+			{#await fetch(`/api/search/@tags:{${tag.slug}}`, { headers: { "Authorization": authorize() } }).then(res => res.json())}
 				<span>Loading...</span>
 			{:then results}
 				<p style="text-align: center;">{results.total} Ergebnisse werden angezeigt</p>

@@ -1,4 +1,5 @@
 <script>
+    import { goto } from '$app/navigation';
 	import Chip from '$lib/Chip.svelte';
 	import { onMount } from 'svelte';
 
@@ -15,8 +16,18 @@
 		tags: []
 	};
 
+	function authorize() {
+		const session = localStorage.getItem("mdbsession");
+		if(!session) return "";
+		return session;
+	}
+
 	onMount(async () => {
-		const result = await fetch(`/api/man/${data.slug}`).then(res => res.json());
+		const result = await fetch(`/api/man/${data.slug}`, {
+			headers: {
+				"Authorization": authorize()
+			}
+		}).then(res => res.json());
 		if(!result) {
 			man = {
 				title: "404",
@@ -107,16 +118,25 @@
 			</button>
 			<button on:click={
 				async () => {
+					if(authorize() === "") {
+						goto("/login?then=" + encodeURI(location.pathname) + "&showThen=" + encodeURI(man.title));
+						return;
+					}
 					// Confirm
-					if(!confirm("Dies wird den Man permanent und unwiderruflich löschen. Da es noch kein Accountsystem gibt, vertraue Ich dir, dass du der Manersteller bist. Bist du dir sicher?")) return;
-
-					await fetch("/api/delete", {
+					if(!confirm("Dies wird den Man permanent und unwiderruflich löschen. Bist du dir sicher?")) return;
+					
+					const res = await fetch("/api/delete", {
 						method: "POST",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							"Authorization": authorize()
 						},
 						body: JSON.stringify({slug: man.slug})
-					});
+					}).then(res => res.json());
+					if(res.error) {
+						alert("Fehler: " + res.error);
+						return;
+					}
 					alert("*poof*");
 					location.href = "/";
 				}

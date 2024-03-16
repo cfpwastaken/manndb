@@ -1,8 +1,13 @@
 <script>
-    import { browser } from "$app/environment";
-    import Chip from "$lib/Chip.svelte";
-    import PostPreview from "$lib/PostPreview.svelte";
+	import { browser } from "$app/environment";
+	import Chip from "$lib/Chip.svelte";
+	import PostPreview from "$lib/PostPreview.svelte";
 
+	function authorize() {
+		const session = localStorage.getItem("mdbsession");
+		if(!session) return "";
+		return session;
+	}
 </script>
 
 <svelte:head>
@@ -57,7 +62,7 @@
 
 <h2 style="text-align: center;">Alle Mans</h2>
 {#if browser}
-	{#await fetch("/api/search/").then(res => res.json())}
+	{#await fetch("/api/search", { headers: { "Authorization": authorize() } }).then(res => res.json())}
 		<span>Loading...</span>
 	{:then results}
 		<p style="text-align: center;">{results.total} Ergebnisse werden angezeigt</p>

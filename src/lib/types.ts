@@ -8,6 +8,7 @@ export type Post = {
 	published: boolean
 	author: string;
 	keyword: string;
+	private: boolean;
 }
 
 export type TagInfo = {

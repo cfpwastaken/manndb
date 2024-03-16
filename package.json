@@ -23,6 +23,7 @@
     "@fontsource/quicksand": "^5.0.16",
     "@fontsource/source-code-pro": "^5.0.16",
     "@sveltejs/adapter-node": "^4.0.1",
+    "argon2": "^0.40.1",
     "mdsvex": "^0.11.0",
     "redis": "^4.6.12"
   }
