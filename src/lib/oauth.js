@@ -1,6 +1,8 @@
 // OIDC Server needs to have redirect url for /login/callback
-import { PUBLIC_CLIENT_ID as CLIENT_ID, PUBLIC_AUTH_URL as AUTH_URL, PUBLIC_TOKEN_URL as TOKEN_URL } from "$env/static/public";
-export { CLIENT_ID, TOKEN_URL };
+import { env } from "$env/dynamic/public";
+export const CLIENT_ID = env.PUBLIC_CLIENT_ID;
+const AUTH_URL = env.PUBLIC_AUTH_URL;
+export const TOKEN_URL = env.PUBLIC_TOKEN_URL;
 
 export async function getAuthURL() {
 	const pkce = await generatePKCEChallenge();
