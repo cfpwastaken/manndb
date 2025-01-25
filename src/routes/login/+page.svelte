@@ -1,8 +1,12 @@
 <script>
 	import { page } from "$app/stores";
-
+	import { getAuthURL } from "$lib/oauth";
+	import { PUBLIC_OIDC_ENABLED, PUBLIC_PASS_ENABLED } from "$env/static/public";
 	let username = "";
 	let password = "";
+
+	const OIDC_ENABLED = PUBLIC_OIDC_ENABLED == "true";
+	const PASS_ENABLED = PUBLIC_PASS_ENABLED == "true";
 
 	function thenURL() {
 		const then = $page.url.searchParams.get("then");
@@ -22,6 +26,7 @@
 		{#if $page.url.searchParams.has("showThen")}
 			<span>und weiter zu {$page.url.searchParams.get("showThen")}</span>
 		{/if}
+		{#if PASS_ENABLED}
 		<input type="text" placeholder="Nutzername" bind:value={username}>
 		<input type="password" placeholder="Passwort" bind:value={password}>
 		<button on:click={async () => {
@@ -37,6 +42,19 @@
 				location.href = thenURL();
 			}
 		}}>Anmelden</button>
+		{/if}
+
+		{#if OIDC_ENABLED}
+		<button on:click={async () => {
+			const auth = await getAuthURL();
+			localStorage.setItem("codeVerifier", auth.codeVerifier);
+			localStorage.setItem("oidc_state", auth.state);
+			localStorage.setItem("thenURL", thenURL());
+			location.href = auth.url;
+		}}>
+			Anmelden mit OIDC
+		</button>
+		{/if}
 		<span>Noch kein Konto oder Passwort vergessen? Fragen Sie den Besitzer dieser Instanz.</span>
 	</div>
 </article>
