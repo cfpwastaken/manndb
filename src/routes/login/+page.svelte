@@ -1,12 +1,12 @@
 <script>
 	import { page } from "$app/stores";
 	import { getAuthURL } from "$lib/oauth";
-	import { PUBLIC_OIDC_ENABLED, PUBLIC_PASS_ENABLED } from "$env/static/public";
+	import { env } from "$env/dynamic/public";
 	let username = "";
 	let password = "";
 
-	const OIDC_ENABLED = PUBLIC_OIDC_ENABLED == "true";
-	const PASS_ENABLED = PUBLIC_PASS_ENABLED == "true";
+	const OIDC_ENABLED = env.PUBLIC_OIDC_ENABLED == "true";
+	const PASS_ENABLED = env.PUBLIC_PASS_ENABLED == "true";
 
 	function thenURL() {
 		const then = $page.url.searchParams.get("then");
