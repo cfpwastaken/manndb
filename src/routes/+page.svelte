@@ -45,30 +45,33 @@
 					<a href="/tag/{tag.slug}">{tag.slug}</a>
 				</Chip>
 			{/each}
-			<Chip>
-				<a href="#" onclick={async () => {
-					const slug = prompt("Slug");
-					const name = prompt("Name");
-					const description = prompt("Beschreibung");
-					const keywordsText = prompt("Keywords (durch Komma getrennt, ohne Leerzeichen)");
-					let keywords;
-					if(keywordsText) keywords = keywordsText.split(",");
-					if(!slug || !name || !description || !keywords) return alert("Bitte alle Felder ausfüllen");
+			{#if localStorage.getItem("mdbsession") != undefined}
+				<Chip>
+					<a href="#" onclick={async () => {
+						const slug = prompt("Slug");
+						const name = prompt("Name");
+						const description = prompt("Beschreibung");
+						const keywordsText = prompt("Keywords (durch Komma getrennt, ohne Leerzeichen)");
+						let keywords;
+						if(keywordsText) keywords = keywordsText.split(",");
+						if(!slug || !name || !description || !keywords) return alert("Bitte alle Felder ausfüllen");
 
-					await fetch("/api/tags/" + slug, {
-						method: "PUT",
-						headers: {
-							"Content-Type": "application/json"
-						},
-						body: JSON.stringify({
-							name,
-							description,
-							keywords
-						})
-					}).then(res => res.json()).then(console.log);
-					location.reload();
-				}}>Neuer Tag</a>
-			</Chip>
+						await fetch("/api/tags/" + slug, {
+							method: "PUT",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify({
+								name,
+								description,
+								keywords,
+								session: localStorage.getItem("mdbsession")
+							})
+						}).then(res => res.json()).then(console.log);
+						location.reload();
+					}}>Neuer Tag</a>
+				</Chip>
+			{/if}
 		</div>
 	{:catch error}
 		<span>{error.message}</span>
