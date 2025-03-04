@@ -12,6 +12,12 @@ function removeFrontmatter(content: string) {
 	return content
 }
 
+function toUTCDateString(dateStr: string) {
+	const [day, month, year] = dateStr.split('.').map(Number);
+	const date = new Date(Date.UTC(year, month - 1, day));
+	return date.toISOString();
+}
+
 export async function GET({ fetch }) {
 	const response = await fetch("api/search")
 	const posts: { documents: { id: string, value: Post }[] } = await response.json()
@@ -33,7 +39,7 @@ export async function GET({ fetch }) {
 							<description><![CDATA[${removeFrontmatter(post.value.content || "")}]]></description>
 							<link>https://manndb.picoscratch.de/${post.value.slug}</link>
 							<guid isPermaLink="true">https://manndb.picoscratch.de/${post.value.slug}</guid>
-							<pubDate>${new Date(post.value.date).toUTCString()}</pubDate>
+							<pubDate>${toUTCDateString(post.value.date)}</pubDate>
 						</item>
 					`
 					)
