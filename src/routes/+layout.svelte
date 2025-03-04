@@ -23,6 +23,9 @@
 	<link rel="stylesheet" href="src/lib/app.css">
 	<link rel="stylesheet" href="src/lib/highlight.css">
 </svelte:head> -->
+<svelte:head>
+	<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.xml">
+</svelte:head>
 
 <main>
 	<Header />

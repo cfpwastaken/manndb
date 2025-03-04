@@ -1,13 +1,30 @@
-<script>
+<script lang="ts">
 	import { browser } from "$app/environment";
 	import Chip from "$lib/Chip.svelte";
 	import PostPreview from "$lib/PostPreview.svelte";
+	import { onMount } from "svelte";
 
 	function authorize() {
 		const session = localStorage.getItem("mdbsession");
 		if(!session) return "";
 		return session;
 	}
+
+	function bumpPinned(pinned: string[], documents: any[]) {
+		const pinnedDocuments = documents.filter(doc => pinned.includes(doc.value.slug));
+		const nonPinnedDocuments = documents.filter(doc => !pinned.includes(doc.value.slug));
+		return pinnedDocuments.concat(nonPinnedDocuments);
+	}
+
+	function isPinned(document: any) {
+		return pinned.includes(document.value.slug);
+	}
+
+	let pinned: string[] = [];
+
+	onMount(async () => {
+		await fetch("/api/pinned").then(res => res.json()).then(res => pinned = res);
+	})
 </script>
 
 <svelte:head>
@@ -67,8 +84,8 @@
 	{:then results}
 		<p style="text-align: center;">{results.total} Ergebnisse werden angezeigt</p>
 		<div class="posts">
-			{#each results.documents as man}
-				<PostPreview post={man.value} />
+			{#each bumpPinned(pinned, results.documents) as man}
+				<PostPreview post={man.value} pinned={isPinned(man)} />
 			{/each}
 		</div>
 	{:catch error}
