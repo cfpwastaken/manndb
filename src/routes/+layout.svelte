@@ -6,6 +6,13 @@
 	// import highlight from "$lib/highlight.css";
 	import "$lib/app.css";
 	import "$lib/highlight.css";
+	/**
+	 * @typedef {Object} Props
+	 * @property {import('svelte').Snippet} [children]
+	 */
+
+	/** @type {Props} */
+	let { children } = $props();
 
 	onNavigate((nav) => {
 		if(!document.startViewTransition) return;
@@ -30,7 +37,7 @@
 <main>
 	<Header />
 	<div class="content">
-		<slot></slot>
+		{@render children?.()}
 	</div>
 	<Footer />
 </main>

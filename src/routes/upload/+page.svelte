@@ -1,28 +1,22 @@
-<script>
-    import { browser } from "$app/environment";
-    import Chip from "$lib/Chip.svelte";
-    import Dialog from "$lib/Dialog.svelte";
-    import { onMount } from "svelte";
+<script lang="ts">
+	import { browser } from "$app/environment";
+	import Chip from "$lib/Chip.svelte";
+	import Dialog from "$lib/Dialog.svelte";
+	import { onMount } from "svelte";
 
-	/**
-	 * @type {FileList}
-	 */
-	let files;
-	/**
-	 * @type {string[]}
-	 */
-	let tags = [];
+	let files: FileList | null = $state(null);
+	let tags: string[] = $state([]);
 	
-	$: if(files) {
-		for(const file of files) {
-			console.log(file);
-		}
-	}
+	// $effect(() => {
+	// 	if(files) {
+	// 		for(const file of files) {
+	// 			console.log(file);
+	// 		}
+	// 	}
+	// });
+	$inspect(files);
 
-	/**
-	 * @param {File} file
-	 */
-	async function ensureMarkdown(file) {
+	async function ensureMarkdown(file: File) {
 		let text = await file.text();
 		if(file.type == "text/markdown") return text;
 		// make sure the file starts with the file name
@@ -33,10 +27,7 @@
 		return text;
 	}
 
-	/**
-	 * @param {File} file
-	 */
-	async function compileFile(file) {
+	async function compileFile(file: File) {
 		let text = await ensureMarkdown(file);
 		return await fetch("/api/render", {
 			method: "POST",
@@ -46,10 +37,7 @@
 		}).then(res => res.json());
 	}
 
-	/**
-	 * @param {File} file
-	 */
-	async function getPreviewData(file) {
+	async function getPreviewData(file: File) {
 		const text = await ensureMarkdown(file);
 		const preview = await fetch("/api/preview", {
 			method: "POST",
@@ -61,9 +49,9 @@
 		return preview;
 	}
 
-	let keyword = "";
-	let showTagDialog = false;
-	let privatePost = false;
+	let keyword = $state("");
+	let showTagDialog = $state(false);
+	let privatePost = $state(false);
 
 	onMount(() => {
 		if(!localStorage.getItem("mdbsession")) {
@@ -87,7 +75,7 @@
 			<div class="tags">
 				{#each results as tag}
 					<Chip>
-						<a href="#" on:click={() => {
+						<a href="#" onclick={() => {
 							tags.push(tag.slug);
 							tags = tags;
 							showTagDialog = false;
@@ -102,7 +90,7 @@
 		<span>Loading...</span>
 	{/if}
 	<div class="buttons">
-		<button on:click={() => {
+		<button onclick={() => {
 			showTagDialog = false;
 		}}>Abbrechen</button>
 	</div>
@@ -120,11 +108,11 @@
 		</div>
 		<input type="file" bind:files>
 		{#if files && files.length > 0}
-			<button on:click={async () => {
+			<button onclick={async () => {
 				const result = await fetch("/api/upload", {
 					method: "POST",
 					body: JSON.stringify({
-						text: await ensureMarkdown(files[0]),
+						text: await ensureMarkdown(files![0]),
 						session: localStorage.getItem("mdbsession"),
 						keyword,
 						tags,
@@ -154,7 +142,7 @@
 								{#each tags as cat}
 									<Chip>
 										{cat}
-										<a href="#" on:click={() => {
+										<a href="#" onclick={() => {
 											tags = tags.filter(t => t !== cat);
 										}}>
 											<svg width="12" height="12" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m4.21 4.387.083-.094a1 1 0 0 1 1.32-.083l.094.083L12 10.585l6.293-6.292a1 1 0 1 1 1.414 1.414L13.415 12l6.292 6.293a1 1 0 0 1 .083 1.32l-.083.094a1 1 0 0 1-1.32.083l-.094-.083L12 13.415l-6.293 6.292a1 1 0 0 1-1.414-1.414L10.585 12 4.293 5.707a1 1 0 0 1-.083-1.32l.083-.094-.083.094Z" fill="#ffffff"/></svg>
@@ -162,7 +150,7 @@
 									</Chip>
 								{/each}
 								<Chip>
-									<a href="#" on:click={() => {
+									<a href="#" onclick={() => {
 										showTagDialog = true;
 									}}>
 										Tag hinzufügen

@@ -1,9 +1,16 @@
 <script>
-	export let inline = false;
+	/**
+	 * @typedef {Object} Props
+	 * @property {boolean} [inline]
+	 * @property {import('svelte').Snippet} [children]
+	 */
+
+	/** @type {Props} */
+	let { inline = false, children } = $props();
 </script>
 
 <div class={`chip ${inline ? "inline" : ""}`}>
-	<slot></slot>
+	{@render children?.()}
 </div>
 
 <style>

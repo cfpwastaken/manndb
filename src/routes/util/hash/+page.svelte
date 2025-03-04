@@ -1,7 +1,7 @@
 <script>
-	let hashcode = "";
-	let password = "";
-	let passhash = "";
+	let hashcode = $state("");
+	let password = $state("");
+	let passhash = $state("");
 </script>
 
 <!-- SEO -->
@@ -15,7 +15,7 @@
 		<span>mit dem sicherem Argon2id-Algorithmus</span>
 		<input type="password" placeholder="Hashcode" bind:value={hashcode}>
 		<input type="password" placeholder="Passwort" bind:value={password}>
-		<button on:click={async () => {
+		<button onclick={async () => {
 			const res = await fetch("/api/hash", {
 				method: "POST",
 				body: JSON.stringify({

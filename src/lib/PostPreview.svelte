@@ -1,18 +1,22 @@
 <script>
 	import Chip from "./Chip.svelte";
 
+	
 	/**
-	 * @type {import("$lib/types").Post}
+	 * @typedef {Object} Props
+	 * @property {import("$lib/types").Post} post
+	 * @property {boolean} [large]
+	 * @property {boolean} [pinned]
 	 */
-	export let post;
-	export let large = false;
-	export let pinned = false;
 
-	let clicked = false;
+	/** @type {Props} */
+	let { post, large = false, pinned = false } = $props();
+
+	let clicked = $state(false);
 </script>
 
 <div class={"post " + (clicked ? "transition " : "") + (large ? "large" : "")}>
-	<a style="display: flex; align-items: center; gap: 5px;" href="/{post.slug}" on:click={() => {
+	<a style="display: flex; align-items: center; gap: 5px;" href="/{post.slug}" onclick={() => {
 		clicked = true;
 	}}>
 		{#if pinned}

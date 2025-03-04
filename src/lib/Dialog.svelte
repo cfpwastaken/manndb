@@ -1,22 +1,31 @@
 <script>
-	export let showDialog = false;
+	/**
+	 * @typedef {Object} Props
+	 * @property {boolean} [showDialog]
+	 * @property {import('svelte').Snippet} [children]
+	 */
+
+	/** @type {Props} */
+	let { showDialog = $bindable(false), children } = $props();
 
 	/**
 	 * @type {HTMLDialogElement}
 	 */
-	let dialog;
+	let dialog = $state();
 
-	$: if(dialog && showDialog) {
-		dialog.showModal();
-	} else if(dialog) {
-		dialog.close();
-	}
+	$effect(() => {
+		if(dialog && showDialog) {
+			dialog.showModal();
+		} else if(dialog) {
+			dialog.close();
+		}
+	});
 </script>
 
 <dialog
 	bind:this={dialog}
-	on:close={() => (showDialog = false)}>
-	<slot />
+	onclose={() => (showDialog = false)}>
+	{@render children?.()}
 </dialog>
 
 <style>

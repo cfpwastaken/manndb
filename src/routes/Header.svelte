@@ -55,7 +55,7 @@
 		<!-- loading... -->
 		{:then loggedIn}
 		{#if loggedIn}
-		<li><a href="#" on:click={() => {
+		<li><a href="#" onclick={() => {
 			localStorage.removeItem("mdbsession");
 			location.reload()
 		}}>

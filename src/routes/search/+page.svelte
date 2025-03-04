@@ -1,15 +1,15 @@
 <script>
-    import { browser } from '$app/environment';
-    import { page } from '$app/stores';
+	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
 	import PostPreview from '$lib//PostPreview.svelte';
 	import { onMount } from 'svelte';
 	import { scale } from 'svelte/transition';
 
-	let searchQuery = $page.url.searchParams.get("query") || "";
+	let searchQuery = $state($page.url.searchParams.get("query") || "");
 	/**
 	 * @type {any}
 	 */
-	let searchResults = {documents: []};
+	let searchResults = $state({documents: []});
 
 	onMount(() => {
 		document.querySelector("input")?.focus();
@@ -21,13 +21,13 @@
 		return session;
 	}
 
-	$: {
+	$effect(() => {
 		if(browser) {
 			(async () => {
 				searchResults = await fetch(`/api/search/${searchQuery}`, { headers: { "Authorization": authorize() } }).then(res => res.json());
 			})();
 		}
-	}
+	});
 </script>
 
 <!-- SEO -->

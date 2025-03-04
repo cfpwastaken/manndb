@@ -20,7 +20,7 @@
 		return pinned.includes(document.value.slug);
 	}
 
-	let pinned: string[] = [];
+	let pinned: string[] = $state([]);
 
 	onMount(async () => {
 		await fetch("/api/pinned").then(res => res.json()).then(res => pinned = res);
@@ -46,7 +46,7 @@
 				</Chip>
 			{/each}
 			<Chip>
-				<a href="#" on:click={async () => {
+				<a href="#" onclick={async () => {
 					const slug = prompt("Slug");
 					const name = prompt("Name");
 					const description = prompt("Beschreibung");

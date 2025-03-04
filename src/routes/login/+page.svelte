@@ -2,8 +2,8 @@
 	import { page } from "$app/stores";
 	import { getAuthURL } from "$lib/oauth";
 	import { env } from "$env/dynamic/public";
-	let username = "";
-	let password = "";
+	let username = $state("");
+	let password = $state("");
 
 	const OIDC_ENABLED = env.PUBLIC_OIDC_ENABLED == "true";
 	const PASS_ENABLED = env.PUBLIC_PASS_ENABLED == "true";
@@ -29,7 +29,7 @@
 		{#if PASS_ENABLED}
 		<input type="text" placeholder="Nutzername" bind:value={username}>
 		<input type="password" placeholder="Passwort" bind:value={password}>
-		<button on:click={async () => {
+		<button onclick={async () => {
 			const result = await fetch("/api/login", {
 				method: "POST",
 				body: JSON.stringify({
@@ -45,7 +45,7 @@
 		{/if}
 
 		{#if OIDC_ENABLED}
-		<button on:click={async () => {
+		<button onclick={async () => {
 			const auth = await getAuthURL();
 			localStorage.setItem("codeVerifier", auth.codeVerifier);
 			localStorage.setItem("oidc_state", auth.state);
